@@ -1,22 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 
 namespace Asset.FinalCharacterController
 {
-
+    [DefaultExecutionOrder(-1)]
     public class PlayerControl : MonoBehaviour
     {
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private Camera _playerCamera;
 
+        [Header("Movement Settings")]
         public float runAcceleration = 0.25f;
         public float runSpeed = 4f;
         public float drag = 0.1f;
 
-        private PlayerLocomotionInput _playerLocomotionInput;
+        [Header("Camera Settings")]
+        public float looksenseH = 0.1f;
+        public float looksenseV = 0.1f;
+        public float looklimitV = 89f;
 
+        private PlayerLocomotionInput _playerLocomotionInput;
+        private Vector2 _cameraRotation = Vector2.zero;
+        private Vector2 _playerTargetRotation = Vector2.zero;
         private void Awake()
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
@@ -40,6 +48,12 @@ namespace Asset.FinalCharacterController
 
             //unity suggests to call this only once per frame tick inside unity runtime
             _characterController.Move(newVelocity * Time.deltaTime);
+        }
+
+        private void LateUpdate()
+        {
+            _cameraRotation.x += looksenseH * _playerLocomotionInput.LookInput.x;
+            _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - looksenseV * _playerLocomotionInput.LookInput.y, -looklimitV, looklimitV);
         }
     }
 }
