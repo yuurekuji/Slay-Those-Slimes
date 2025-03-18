@@ -54,6 +54,11 @@ namespace Asset.FinalCharacterController
         {
             _cameraRotation.x += looksenseH * _playerLocomotionInput.LookInput.x;
             _cameraRotation.y = Mathf.Clamp(_cameraRotation.y - looksenseV * _playerLocomotionInput.LookInput.y, -looklimitV, looklimitV);
+
+            _playerTargetRotation.x += transform.eulerAngles.x + looksenseH * _playerLocomotionInput.LookInput.x;
+            transform.rotation = Quaternion.Euler(0f, _playerTargetRotation.x, 0f);
+
+            _playerCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
         }
     }
 }
